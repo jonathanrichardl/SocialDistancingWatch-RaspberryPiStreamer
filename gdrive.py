@@ -54,7 +54,7 @@ class Drive:
             "name": filename,
             "parents": [self.folder]
         }
-        media = MediaFileUpload(f"to_upload/{filename}", resumable=True)
+        media = MediaFileUpload(filename, resumable=True)
         _ = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
         print(f"File {filename} Uploaded")
 
