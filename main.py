@@ -1,20 +1,26 @@
 from gdrive import Drive
 from time import sleep
-def take_picture() -> str:
-    """
-    take picture, save ke raspi, trus return nama filenya dan pathnya (misal 'D:/halo/kemas.jpg')
-    """
-    filename = ""
-    raise NotImplementedError
-    return filename
+from picamera import PiCamera
+from datetime import datetime as dt
+from os import remove
+class Camera():
+    def __init__(self):
+        self.camera = PiCamera()
+    
+    def take_picture(self) -> str:
+        filename = f"/home/pi/Pictures/{dt.now().strftime('%d-%m-%y %H:%M')}.jpg"
+        self.camera.capture(filename)
+        return filename
 
 def main():
     #silahkan tambah fungsi setup kameranya disini
     drive_service = Drive() 
     drive_service.make_folder()
+    cam = Camera()
     while 1:
-        filename = take_picture()
+        filename = cam.take_picture()
         drive_service.upload(filename)
-        sleep(10) #masukan interval pengambilan foto disini
+        remove(filename)
+        sleep(7) #masukan interval pengambilan foto disini
 
 
