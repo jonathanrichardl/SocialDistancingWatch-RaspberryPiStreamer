@@ -7,9 +7,11 @@ class Camera():
     def __init__(self):
         self.camera = PiCamera()
     
-    def take_picture(self) -> str:
+    def take_video(self) -> str:
         filename = f"/home/pi/Pictures/{dt.now().strftime('%d-%m-%y %H:%M')}.jpg"
-        self.camera.capture(filename)
+        self.camera.start_recording(filename)
+        sleep(60)
+        self.camera.stop_recording()
         return filename
 
 def main():
@@ -18,9 +20,12 @@ def main():
     drive_service.make_folder()
     cam = Camera()
     while 1:
-        filename = cam.take_picture()
-        drive_service.upload(filename)
-        remove(filename)
-        sleep(7) #masukan interval pengambilan foto disini
+        filename = cam.take_video()
+        try:
+            drive_service.upload(filename)
+            remove(filename)
+        except:
+            pass
+        
 
 
