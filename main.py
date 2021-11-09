@@ -11,7 +11,7 @@ class Camera():
     def take_video(self) -> str:
         filename = f"/home/pi/Pictures/{dt.now().strftime('%d-%m-%y %H:%M')}.h264"
         self.camera.start_recording(filename)
-        sleep(60)
+        sleep(60) #durasi perekaman, silahkan di modif sesuai keperluan
         self.camera.stop_recording()
         return filename
 
