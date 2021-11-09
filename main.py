@@ -6,16 +6,16 @@ from os import remove
 class Camera():
     def __init__(self):
         self.camera = PiCamera()
+        self.camera.resolution = (1280, 720)
     
     def take_video(self) -> str:
-        filename = f"/home/pi/Pictures/{dt.now().strftime('%d-%m-%y %H:%M')}.jpg"
+        filename = f"/home/pi/Pictures/{dt.now().strftime('%d-%m-%y %H:%M')}.h264"
         self.camera.start_recording(filename)
         sleep(60)
         self.camera.stop_recording()
         return filename
 
 def main():
-    #silahkan tambah fungsi setup kameranya disini
     drive_service = Drive() 
     drive_service.make_folder()
     cam = Camera()
