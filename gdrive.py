@@ -20,7 +20,6 @@ class Drive:
         creds = None
         if os.path.exists('token.json'):
             creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-        # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
@@ -28,7 +27,6 @@ class Drive:
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'credentials.json', SCOPES)
                 creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
             with open('token.json', 'w') as token:
                 token.write(creds.to_json())
 
@@ -55,11 +53,11 @@ class Drive:
             "parents": [self.folder]
         }
         media = MediaFileUpload(filename, resumable=True)
-        _ = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        file = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
         print(f"File {filename} Uploaded")
-print("OKE")
+        return file.get('id')
+
 if __name__ == '__main__':
-    
     drive_service = Drive()
     drive_service.make_folder()
     for file in os.listdir("to_upload"):

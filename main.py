@@ -1,8 +1,26 @@
 from gdrive import Drive
 from time import sleep
 import datetime
+from mqtt import Mqtt
+import json
 from picamera import PiCamera
 from os import remove
+
+class Messenger():
+    def __init__(self, classroom):
+        self.messenger = Mqtt("server", address='broker.emqx.io', port=1883)
+        self.placeholder = {
+            "class" : classroom
+
+        }
+    
+    def encode_and_upload_json(self, image_id : str):
+        self.placeholder['link'] = image_id
+        self.messenger.publish(json.dumps(self.placeholder), "59288f20-4e6d-4423-938a-84b9dcfc7be4")
+        
+
+
+
 class Camera():
     def __init__(self):
         self.camera = PiCamera()
@@ -20,6 +38,7 @@ class Camera():
 
 
 def main():
+    messenger = Messenger()
     drive_service = Drive() 
     drive_service.make_folder()
     camera = Camera()
@@ -27,10 +46,11 @@ def main():
         try:
             filename = camera.take_picture() 
             try:
-                print(f'Uploading {filename}')
-                drive_service.upload(filename)
-                print('Done')
+                file_id = drive_service.upload(filename)
+                messenger.encode_and_upload_json(file_id)
                 remove(filename)
+                
+                
             except :
                 pass
         except KeyboardInterrupt:
