@@ -40,7 +40,7 @@ class Drive:
         Membuat Folder di google drive untuk menyimpan foto foto pada sesi pemrotetan  ini
         """
         folder_metadata = {
-            "name": dt.now().strftime("Pengambilan %d-%m-%y %H:%M"),
+            "name": dt.now().strftime("Raspberry Pi 3:  %d-%m-%y %H:%M"),
             "mimeType": "application/vnd.google-apps.folder"
         }
         folder  = self.service.files().create(body=folder_metadata, fields="id").execute()
@@ -57,8 +57,9 @@ class Drive:
         media = MediaFileUpload(filename, resumable=True)
         _ = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
         print(f"File {filename} Uploaded")
-
+print("OKE")
 if __name__ == '__main__':
+    
     drive_service = Drive()
     drive_service.make_folder()
     for file in os.listdir("to_upload"):
