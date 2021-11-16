@@ -6,8 +6,9 @@ import json
 from picamera import PiCamera
 from os import remove
     
-def encode_and_upload_json(messenger, placeholder, image_id : str):
+def encode_and_upload_json(messenger, placeholder, image_id : str, image_link : str):
     placeholder['link'] = image_id
+    placeholder['drive_link'] = image_link
     messenger.publish(json.dumps(placeholder), "119827")
     
 
@@ -23,7 +24,7 @@ class Camera():
         """
         take picture, save ke raspi, trus return nama filenya dan pathnya (misal 'D:/halo/kemas.jpg')
         """
-        file_name = "/home/pi/Tes/"+ str(datetime.datetime.now().strftime("%H-%M-%S-%f")) + ".png"
+        file_name = "/home/pi/Pictures/"+ str(datetime.datetime.now().strftime("%H-%M-%S-%f")) + ".png"
         self.camera.capture(file_name)
         return file_name
         
@@ -38,8 +39,8 @@ def main():
     while 1:
         try:
             filename = camera.take_picture()
-            photo_id = drive_service.upload(filename)
-            encode_and_upload_json(messenger,placeholder, photo_id)
+            photo_id, photo_link = drive_service.upload(filename)
+            encode_and_upload_json(messenger,placeholder, photo_id, photo_link)
             remove(filename)
             break
         except KeyboardInterrupt:

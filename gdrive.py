@@ -31,6 +31,9 @@ class Drive:
                 token.write(creds.to_json())
 
         self.service = build('drive', 'v3', credentials=creds)
+        self.permission = {'type' : 'anyone',
+                           'value': 'anyone',
+                           'role' : 'reader'}
     
         
     def make_folder(self):
@@ -53,8 +56,9 @@ class Drive:
             "parents": [self.folder]
         }
         media = MediaFileUpload(filename, resumable=True)
-        file = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-        return file.get('id')
+        file = self.service.files().create(body=file_metadata, media_body=media, fields='id, webViewLink').execute()
+        self.service.permissions().create(fileId=file.get('id'),body=self.permission).execute()
+        return file.get('id'), file.get('webViewLink')
 
 if __name__ == '__main__':
     drive_service = Drive()
