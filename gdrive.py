@@ -54,7 +54,6 @@ class Drive:
         }
         media = MediaFileUpload(filename, resumable=True)
         file = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-        print(f"File {filename} Uploaded")
         return file.get('id')
 
 if __name__ == '__main__':
