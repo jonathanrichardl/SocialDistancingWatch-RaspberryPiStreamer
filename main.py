@@ -6,8 +6,9 @@ import json
 from picamera import PiCamera
 from os import remove
     
-def encode_and_upload_json(messenger, placeholder, image_id : str):
+def encode_and_upload_json(messenger, placeholder, image_id : str, drive_link):
     placeholder['link'] = image_id
+    placeholder['drive_link'] = drive_link
     messenger.publish(json.dumps(placeholder), "119827")
     
 
@@ -30,7 +31,7 @@ class Camera():
 
 
 def main():
-    placeholder = {"class" : 'X IPA 1'}
+    placeholder = {"class" : 'XII IPA 2'}
     messenger = Mqtt("112234", address='broker.emqx.io', port=1883)
     drive_service = Drive() 
     drive_service.make_folder()
@@ -38,10 +39,9 @@ def main():
     while 1:
         try:
             filename = camera.take_picture()
-            photo_id = drive_service.upload(filename)
-            encode_and_upload_json(messenger,placeholder, photo_id)
+            photo_id,link = drive_service.upload(filename)
+            encode_and_upload_json(messenger,placeholder, photo_id,link)
             remove(filename)
-            break
         except KeyboardInterrupt:
             break
     camera.camera.close()
