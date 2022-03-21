@@ -1,4 +1,3 @@
-from typing import Callable
 import paho.mqtt.client as mqtt
 import time
 import json
