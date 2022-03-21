@@ -1,4 +1,5 @@
 {
     "classroom" : "X IPA 1",
-    "id" : "5a389b83-1372-4ee4-a412-55073645078b"
+    "mqtt_channel" : "image_stream_channel_uQkndf",
+    "mqtt_id" : "raspbery-pi-streamer-uQkndf-1"
 }
