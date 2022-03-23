@@ -38,7 +38,7 @@ class Mqtt:
         self.handlers[message.topic](message.payload.decode())
         
 
-    def subscribe(self,topic : str , handler:Callable): 
+    def subscribe(self,topic : str , handler): 
         self.client.subscribe(topic)
         self.handlers[topic] = handler
 

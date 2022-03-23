@@ -1,9 +1,11 @@
+import os
 from mqtt import Mqtt
 from firebase_service import Firebase
 from io import BytesIO
 from sys import path
 import json
 from time import sleep
+import sys
 class Camera():
     def __init__(self):
         self.camera = PiCamera()
@@ -30,16 +32,17 @@ def main():
     mqtt_id = config['mqtt_id']
     messenger = Mqtt(mqtt_id, address='broker.emqx.io', port=1883)
     firebase_service = Firebase()
-    camera = Camera()
-    while 1:
+    for img in os.listdir(f"{sys.path[0]}/test"):
         try:
-            img_buffer = camera.take_picture()
+            with open(f'{sys.path[0]}/test/{img}', 'rb') as file:
+                img_buffer = file.read()
+                file.close()
             url = firebase_service.upload(img_buffer, f"{config['id']}/({photo_name}).jpeg")
             encode_and_upload_json(messenger, placeholder, url, mqtt_channel)
             photo_name = photo_name + 1 if photo_name <= 10 else 0
+            sleep(2)
         except KeyboardInterrupt:
             break
-    camera.camera.close()
 
 
 if __name__ == '__main__':
